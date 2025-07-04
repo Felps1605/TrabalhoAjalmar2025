@@ -9,10 +9,11 @@ struct UF uf;
 uf.codigo=codigo;
 strcopy
 printf("Insira o código da UF: ");
-scanf alguma c 
+scanf alguma coisa 
 printf("Insira o nome da UF ");
   
 
-  
+  printf("hello world")
+    
 }
 
