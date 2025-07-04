@@ -3,5 +3,17 @@
 #include <stdlib.h>
 #include "uf.h"
 
-uf_inserir(){}
+void uf_inserir(int codigo, char descricao[], char sigla[])
+{
+struct UF uf;
+uf.codigo=codigo;
+strcopy
+printf("Insira o código da UF: ");
+scanf alguma coisa
+  
+printf("Insira o nome da UF ");
+  
+
+  
+}
 
