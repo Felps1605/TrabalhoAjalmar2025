@@ -6,12 +6,14 @@
 void uf_inserir(int codigo, char descricao[], char sigla[])
 {
 struct UF uf;
-uf.codigo=codigo;
-strcopy(uf.descricao, descricao);
-strcopy(uf.sigla, sigla)
+int codigo;
 printf("Insira o código da UF: ");
-scanf alguma coisa 
+scanf("%d", &codigo);
+uf.codigo=codigo;
 printf("Insira o nome da UF ");
-    
-}
+strcpy(uf.descricao, descricao);
+printf("Insira a sigla da UF: ");
+strcpy(uf.sigla, sigla);
 
+
+}
