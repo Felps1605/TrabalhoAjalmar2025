@@ -12,7 +12,7 @@ void estados() {
             case 1:
                 inserir();
                 break;
-            case 4:mostraruf();break;
+            case 4:mostrartodos();break;
             case 0:break;
             default:
                 printf("escolha uma opcao valida \n");
@@ -69,7 +69,7 @@ void inserir() {
     fclose(f);
 
 }
-void mostraruf() {
+void mostrartodos() {
     FILE *f = fopen("UF.data", "rb+");
     if (f == NULL) {
         printf("Arquivo nao existe. \n");
