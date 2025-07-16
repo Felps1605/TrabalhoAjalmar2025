@@ -5,6 +5,11 @@
 
 #define FILENAME "UF.data"
 
+uf *puf = NULL;
+int numufc = 0;
+int capacity = 0;
+int modified = 0;
+
 // Menu
 void estados()
 {
@@ -32,6 +37,7 @@ void estados()
             mostraruf();
             break;
         case 0:
+            saveUF();
             break;
         default:
             printf("escolha uma opcao valida \n");
@@ -81,6 +87,20 @@ void pushUF(const uf *pushedUf) {
 
     // Coloca o novo uf no primeiro espaço vago no vetor
     puf[numufc++] = *pushedUf;
+}
+
+// Salvar o puf no arquivo
+void saveUF()
+{
+    FILE *f = fopen(FILENAME, "wb");
+    if (f == NULL) {
+        printf("Erro ao abrir o arquivo uf\n");
+        return;
+    }
+    fwrite(puf, sizeof(uf), numufc, f);
+    fclose(f);
+    modified = 0;
+    printf("Alteracoes salvas com sucesso! \n");
 }
 
 // Insere um novo UF
@@ -136,7 +156,7 @@ void mostraruf()
     printf("digite o código da UF desejada: \n");
     scanf("%d", &cod);
     faxineirojp();
-    for (int i = 0; i < numufc; i++)
+    for (int i = 1; i < numufc; i++)
     {
         if (puf[i].codigo == cod)
         {
@@ -144,7 +164,8 @@ void mostraruf()
             printf("Estado : %s \n", puf[i].descricao);
             printf("Sigla : %s \n", puf[i].sigla);
             break;
-        }else
+        }
+        else
         printf("UF nao encontrada. \n");
     }
 
@@ -162,61 +183,65 @@ void mostrartodos()
 void excluir()
 {
     int cod;
-    printf("digite o código da UF que deseja excluir: \n");
-    scanf("%d", &cod);
-    faxineirojp();
+    do {
+        printf("insira o codigo da UF que deseja excluir: \n");
+        scanf("%d", &cod);
+        faxineirojp();
+        if (buscar_codigo(cod) > 0){
+            break;
+        }
+        else {
+            printf("UF nao encontrada. \n");
+        }
+    }while(1);
+
     for (int i = 0; i < numufc; i++)
     {
         if (puf[i].codigo == cod)
-        {
+        {   
 
             break;
-        }else
-        printf("UF nao encontrada. \n");
+        }
+
     }
 
 }
 
 // Update
-void alterar()
-{
-    FILE *f = fopen(FILENAME, "rb+");
-    if (f == NULL)
-    {
-        printf("Arquivo nao existe. \n");
-    }
+void alterar() {
     int cod;
-    printf("insira o codigo que deseja alterar: \n");
-    scanf("%d", &cod);
-    faxineirojp();
-    uf temp;
-    fseek(f, 0, SEEK_SET);
-    int flag = 0;
+    do {
+        printf("insira o codigo da UF que deseja alterar: \n");
+        scanf("%d", &cod);
+        faxineirojp();
+        if (buscar_codigo(cod) > 0){
+            break;
+        }
+        else {
+            printf("UF nao encontrada. \n");
+        }
+
+    }while (1);
+
     for (int i = 1; i <= 27; i++)
     {
-        fread(&temp, sizeof(uf), 1, f);
-        if (temp.codigo == cod)
+
+        if (puf[i].codigo == cod)
         {
             char descri[100];
-            printf("insira a descriçao: \n");
+            printf("insira a descricao: \n");
             fgets(descri, 100, stdin);
             descri[strcspn(descri, "\n")] = '\0';
-            strcpy(temp.descricao, descri);
+            strcpy(puf[i].descricao, descri);
 
             char sig[3];
             printf("insira a sigla: \n");
             fgets(sig, sizeof(sig), stdin);
             sig[strcspn(sig, "\n")] = '\0';
-            strcpy(temp.sigla, sig);
-            fseek(f, (i - 1) * sizeof(uf), SEEK_SET);
-            fwrite(&temp, sizeof(uf), 1, f);
-            fclose(f);
-            flag = 1;
+            strcpy(puf[i].sigla, sig);
             break;
         }
     }
-    if (flag == 0)
-       printf("codigo nao existe: \n");
 }
 
 // Limpador de buffer
@@ -227,15 +252,6 @@ void faxineirojp()
 }
 
 // Utils
-uf *reallocu(uf *p)
-{
-    uf *novo = realloc(p, sizeof(uf) * numufc);
-    if (novo == NULL)
-    {
-        exit(-1);
-    }
-    return novo;
-}
 int buscar_codigo(int cod)
 {
     for (int i = 0; i < numufc; i++)
