@@ -5,6 +5,7 @@
 void estados();
 void menu();
 int main() {
+    loadUFs();
     int op;
     do {
         menu();
@@ -28,6 +29,5 @@ void menu() {
     printf("| 0- SAIR                                    |\n");
     printf("|============================================|\n");
 };
-
 
 
