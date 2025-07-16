@@ -1,18 +1,24 @@
-struct UF {
+typedef struct {
     int codigo;
     char descricao[100];
     char sigla[3];
-};
-typedef struct UF uf;
+} uf;
+
+// Funções
+
+// Menu
+void estados();
+void menuuf();
+
+void loadUFs();
+void pushUF();
+void saveUF();
+
 void inserir();
 void alterar();
 void excluir();
 void mostrartodos();
 void mostraruf();
-void estados();
-void menuuf();
 void faxineirojp();
 int vercod();
-void comecar();
-uf* reallocu();
 int buscar_codigo(int cod);
