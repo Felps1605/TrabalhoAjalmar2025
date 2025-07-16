@@ -12,3 +12,7 @@ void mostraruf();
 void estados();
 void menuuf();
 void faxineirojp();
+int vercod();
+void comecar();
+uf* reallocu();
+int buscar_codigo(int cod);
