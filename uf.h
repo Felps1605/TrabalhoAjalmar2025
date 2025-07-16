@@ -2,6 +2,7 @@ typedef struct {
     int codigo;
     char descricao[100];
     char sigla[3];
+    int existe;
 } uf;
 
 // Funções
@@ -20,5 +21,6 @@ void excluir();
 void mostrartodos();
 void mostraruf();
 void faxineirojp();
-int vercod();
 int buscar_codigo(int cod);
+int buscar_existencia();
+int buscar_sigla();
