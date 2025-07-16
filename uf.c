@@ -110,21 +110,21 @@ void inserir()
     int cod;
     do
     {
-        printf("digite o codigo: \n");
+        printf("Insira o codigo: \n");
         scanf("%d", &cod);
         faxineirojp();
-        if (cod < 1 || cod > 27)
+        if (cod < 1 )
         {
-            printf("codigo invalido! Deve estar entre 1 e 27.\n");
+            printf("Codigo invalido! Precisa ser maior que 0! \n");
             return;
         }
         if (buscar_codigo(cod) >= 0)
-            printf("Digite um numero que nao esta no banco de dados: \n");
-    } while (buscar_codigo(cod) >= 0 || cod < 1 || cod > 27);
+            printf("Insira um numero que nao esteja no banco de dados: \n");
+    } while (buscar_codigo(cod) >= 0 || cod < 1);
 
     // Ler a descrição
     char descri[100];
-    printf("insira a descriçao: \n");
+    printf("Insira a descricao: \n");
     fgets(descri, 100, stdin);
     descri[strcspn(descri, "\n")] = '\0';
 
@@ -132,50 +132,77 @@ void inserir()
     char sig[3];
     do
     {
-        printf("insira a sigla: \n");
+        printf("Insira a sigla: \n");
         fgets(sig, sizeof(sig), stdin);
         sig[strcspn(sig, "\n")] = '\0';
-        if (strlen(sig) != 2)
-            printf("Digite uma sigla valida \n");
-    } while (strlen(sig) != 2);
+        faxineirojp();
+        if (buscar_sigla(sig)) {
+            printf("Sigla ja esta em uso. \n");
+        }else
+            if (strlen(sig) != 2)
+                printf("Insira uma sigla valida \n");
+            else
+                break;
+
+    } while (1);
 
     // Dá push no novo UF
     uf temp;
     temp.codigo = cod;
     strcpy(temp.descricao, descri);
     strcpy(temp.sigla, sig);
+    temp.existe = 1;
 
     pushUF(&temp);
     modified = 1;
+
+
 }
 
 // Show uf
 void mostraruf()
 {
     int cod;
-    printf("digite o código da UF desejada: \n");
+    printf("Digite o codigo da UF desejada: \n");
     scanf("%d", &cod);
     faxineirojp();
-    for (int i = 1; i < numufc; i++)
+    int flag = 0;
+    for (int i = 0; i <= numufc; i++)
     {
-        if (puf[i].codigo == cod)
-        {
-            printf("codigo :%d \n", puf[i].codigo);
+        if (puf[i].codigo == cod){
+            if (puf[i].existe == 0) {
+                printf("Essa Uf não existe mais. \n");
+                return;
+            }
+            flag = 1;
+            printf("Codigo : %d \n", puf[i].codigo);
             printf("Estado : %s \n", puf[i].descricao);
-            printf("Sigla : %s \n", puf[i].sigla);
+            printf("Sigla  : %s \n", puf[i].sigla);
             break;
         }
-        else
-        printf("UF nao encontrada. \n");
     }
-
+    if (flag == 0)
+        printf("UF nao encontrada. \n"); 
 }
 void mostrartodos()
 {
-    for (int i = 0; i < numufc; i++) {
-        printf("codigo :%d \n", puf[i].codigo);
-        printf("Estado : %s \n", puf[i].descricao);
-        printf("Sigla : %s \n", puf[i].sigla);
+    if (puf == NULL) {
+        printf("Nao ha UFs a serem exibidas. \n");
+        return;
+    }
+    if (!(buscar_existencia())) {
+        printf("Nao existem Ufs a serem exibidas. \n");
+        return;
+    }
+    else{
+        for (int i = 0; i < numufc; i++) {
+            if (puf[i].existe == 0)
+                continue;
+            printf("Codigo : %d \n", puf[i].codigo);
+            printf("Estado : %s \n", puf[i].descricao);
+            printf("Sigla  : %s \n\n", puf[i].sigla);
+
+        }
     }
 }
 
@@ -187,18 +214,25 @@ void excluir()
         printf("insira o codigo da UF que deseja excluir: \n");
         scanf("%d", &cod);
         faxineirojp();
-        if (buscar_codigo(cod) > 0){
+        if (buscar_codigo(cod) >= 0){
             break;
         }
         else {
             printf("UF nao encontrada. \n");
+            return;
         }
     }while(1);
 
     for (int i = 0; i < numufc; i++)
     {
         if (puf[i].codigo == cod)
-        {   
+        {
+            if (puf[i].existe == 0) {
+                printf("Essa Uf nao existe mais. \n");
+                modified = 1;
+                return;
+            }
+            puf[i].existe = 0;
 
             break;
         }
@@ -214,7 +248,7 @@ void alterar() {
         printf("insira o codigo da UF que deseja alterar: \n");
         scanf("%d", &cod);
         faxineirojp();
-        if (buscar_codigo(cod) > 0){
+        if (buscar_codigo(cod) >= 0){
             break;
         }
         else {
@@ -223,11 +257,17 @@ void alterar() {
 
     }while (1);
 
-    for (int i = 1; i <= 27; i++)
+    for (int i = 1; i <= numufc; i++)
     {
 
-        if (puf[i].codigo == cod)
-        {
+        if (puf[i].codigo == cod){
+            if (puf[i].existe == 0) {
+                printf("Essa Uf nao existe mais. \n");
+                return;
+            }
+
+
+
             char descri[100];
             printf("insira a descricao: \n");
             fgets(descri, 100, stdin);
@@ -262,4 +302,30 @@ int buscar_codigo(int cod)
         }
     }
     return -1;
+}
+
+int buscar_existencia() {
+    for (int i = 0; i < numufc; i++)
+    {
+        if (puf[i].existe == 1)
+        {
+            return 1;
+        }
+
+    }
+    return 0;
+}
+int buscar_sigla(char sig[3]) {
+    for (int i = 0; i < numufc; i++)
+    {
+        int count = 0;
+        for (int j = 0; j < strlen(puf[i].sigla); j++) {
+            if (puf[i].sigla[j] == sig[j]) {
+                ++count;
+                if (count == 2)
+                    return 1;
+            }
+        }
+    }
+    return 0;
 }
