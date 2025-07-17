@@ -279,6 +279,8 @@ void alterar() {
             fgets(sig, sizeof(sig), stdin);
             sig[strcspn(sig, "\n")] = '\0';
             strcpy(puf[i].sigla, sig);
+            modified = 1;
+            printf("%s foi alterado com sucesso. \n");
             break;
         }
     }
