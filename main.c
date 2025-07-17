@@ -2,10 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include "UF.h"
+#include "pessoas.h"
 void estados();
 void menu();
 int main() {
     loadUFs();
+    carregar_pessoas();
     int op;
     do {
         menu();
