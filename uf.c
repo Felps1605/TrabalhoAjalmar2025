@@ -1,10 +1,10 @@
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include "UF.h"
 
 #define FILENAME "UF.data"
-
 uf *puf = NULL;
 int numufc = 0;
 int capacity = 0;
@@ -137,7 +137,8 @@ void inserir()
         sig[strcspn(sig, "\n")] = '\0';
         faxineirojp();
         if (buscar_sigla(sig)) {
-            printf("Sigla ja esta em uso. \n");
+            if (puf[buscar_sigla(sig)].existe == 1 )
+                printf("Sigla ja esta em uso. \n");
         }else
             if (strlen(sig) != 2)
                 printf("Insira uma sigla valida \n");
@@ -155,7 +156,7 @@ void inserir()
 
     pushUF(&temp);
     modified = 1;
-    printf("%s foi removido do sistema com sucesso. \n", temp.descricao);
+    printf("%s foi inserido no sistema com sucesso. \n", temp.descricao);
 
 }
 
@@ -190,7 +191,7 @@ void mostrartodos()
         printf("Nao ha UFs a serem exibidas. \n");
         return;
     }
-    if (!(buscar_existencia())) {
+    if (buscar_existencia()== -1 ) {
         printf("Nao existem Ufs a serem exibidas. \n");
         return;
     }
@@ -210,18 +211,14 @@ void mostrartodos()
 void excluir()
 {
     int cod;
-    do {
+
         printf("insira o codigo da UF que deseja excluir: \n");
         scanf("%d", &cod);
         faxineirojp();
-        if (buscar_codigo(cod) >= 0){
-            break;
-        }
-        else {
+        if ((buscar_codigo(cod) < 0)){
             printf("UF nao encontrada. \n");
             return;
         }
-    }while(1);
 
     for (int i = 0; i < numufc; i++)
     {
@@ -245,7 +242,7 @@ void excluir()
 void alterar() {
     int cod;
     do {
-        printf("insira o codigo da UF que deseja alterar: \n");
+        printf("Insira o codigo da UF que deseja alterar: \n");
         scanf("%d", &cod);
         faxineirojp();
         if (buscar_codigo(cod) >= 0){
@@ -257,7 +254,7 @@ void alterar() {
 
     }while (1);
 
-    for (int i = 1; i <= numufc; i++)
+    for (int i = 0; i <= numufc; i++)
     {
 
         if (puf[i].codigo == cod){
@@ -275,12 +272,24 @@ void alterar() {
             strcpy(puf[i].descricao, descri);
 
             char sig[3];
-            printf("insira a sigla: \n");
-            fgets(sig, sizeof(sig), stdin);
-            sig[strcspn(sig, "\n")] = '\0';
-            strcpy(puf[i].sigla, sig);
+            do
+            {
+                printf("Insira a sigla: \n");
+                fgets(sig, sizeof(sig), stdin);
+                sig[strcspn(sig, "\n")] = '\0';
+                faxineirojp();
+                if (buscar_sigla(sig)) {
+                    if (puf[buscar_sigla(sig)].existe == 1 )
+                        printf("Sigla ja esta em uso. \n");
+                }else
+                    if (strlen(sig) != 2)
+                        printf("Insira uma sigla valida \n");
+                    else
+                        break;
+
+            } while (1);
             modified = 1;
-            printf("%s foi alterado com sucesso. \n");
+            printf("%s foi alterado no sistema com sucesso. \n", puf[i].descricao);
             break;
         }
     }
@@ -311,11 +320,11 @@ int buscar_existencia() {
     {
         if (puf[i].existe == 1)
         {
-            return 1;
+            return i;
         }
 
     }
-    return 0;
+    return -1;
 }
 int buscar_sigla(char sig[3]) {
     for (int i = 0; i < numufc; i++)
@@ -325,7 +334,7 @@ int buscar_sigla(char sig[3]) {
             if (puf[i].sigla[j] == sig[j]) {
                 ++count;
                 if (count == 2)
-                    return 1;
+                    return i;
             }
         }
     }
