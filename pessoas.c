@@ -81,7 +81,7 @@ void carregar_pessoas()
     modificado = 0;
 }
 
-// Adicionar UF no vetor
+// Adicionar pessoa no vetor
 void push_pessoas(const pessoa *pushed_pessoa) {
     // Verifica se o vetor (ppe) tem capacidade para mais um elemento
     if (num_pes >= capacidade) {
@@ -91,7 +91,7 @@ void push_pessoas(const pessoa *pushed_pessoa) {
         if (!ppe) return;
     }
 
-    // Coloca o novo uf no primeiro espaço vago no vetor
+    // Colocaa a nova pessoa no primeiro espaço vago no vetor
     ppe[num_pes++] = *pushed_pessoa;
 }
 
