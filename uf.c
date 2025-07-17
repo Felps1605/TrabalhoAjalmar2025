@@ -155,7 +155,7 @@ void inserir()
 
     pushUF(&temp);
     modified = 1;
-
+    printf("%s foi removido do sistema com sucesso. \n", temp.descricao);
 
 }
 
@@ -182,7 +182,7 @@ void mostraruf()
         }
     }
     if (flag == 0)
-        printf("UF nao encontrada. \n"); 
+        printf("UF nao encontrada. \n");
 }
 void mostrartodos()
 {
@@ -229,11 +229,11 @@ void excluir()
         {
             if (puf[i].existe == 0) {
                 printf("Essa Uf nao existe mais. \n");
-                modified = 1;
                 return;
             }
             puf[i].existe = 0;
-
+            modified = 1;
+            printf("%s foi removido do sistema com sucesso. \n", puf[i].descricao);
             break;
         }
 
