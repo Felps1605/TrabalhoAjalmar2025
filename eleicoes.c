@@ -159,6 +159,10 @@ void inserir_eleicao()
 
 // Show uf
 void mostrar_eleicao() {
+    if (pel == NULL) {
+        printf("Nao ha eleicoes a serem exibidas. \n");
+        return;
+    }
     int cod;
     printf("Digite o codigo da UF da eleicao desejada: \n");
     scanf("%d", &cod);
@@ -218,18 +222,24 @@ int flag = 0;
 
 // Delete
 void excluir_eleicao()
-{   int cod;
+{   if (pel == NULL) {
+        printf("Nao ha eleicoes a serem excluidas. \n");
+        return;
+    }
+    int cod;
     printf("Digite o codigo da UF da eleicao que deseja excluir: \n");
     scanf("%d", &cod);
     faxineirojpe();
     int flag = 0;
     if (buscar_codigo(cod)== -1) {
         printf("UF nao encontrada. \n");
+        return;
     }
     if (puf[buscar_existencia()].existe == 0) {
         printf("Essa UF nao existe mais. \n");
         return;
     }
+
     printf("Digite o ano da eleicao que deseja excluir: \n");
     int ano;
     scanf("%d", &ano);
@@ -249,12 +259,18 @@ void excluir_eleicao()
             }
     }
 
-    if (flag == 0)
+    if (flag == 0) {
         printf("Eleicao nao encontrada. \n");
+        return;
+    }
 }
 
 // Update
 void alterar_eleicao() {
+    if (pel == NULL) {
+        printf("Nao ha eleicoes a serem alteradas. \n");
+        return;
+    }
     int cod;
     printf("Digite o codigo da UF da eleicao que deseja alterar: \n");
     scanf("%d", &cod);
@@ -263,10 +279,12 @@ void alterar_eleicao() {
     if (buscar_codigo(cod)== -1) {
         printf("UF nao encontrada. \n");
         return;
-    }if (puf[buscar_existencia()].existe == 0) {
+    }
+    if (puf[buscar_existencia()].existe == 0) {
         printf("Essa UF nao existe mais. \n");
         return;
     }
+
     for (int i = 0; i <= num_elei; i++)
     {
         if (pel[i].codigoUF == cod){
