@@ -3,8 +3,6 @@
 #include <stdlib.h>
 #include "pessoas.h"
 
-#include "UF.h"
-
 #define FILENAME "pessoas.data"
 
 pessoa *ppe = NULL;
@@ -67,7 +65,6 @@ void carregar_pessoas()
     FILE *f = fopen(FILENAME, "rb");
     // Verifica se funcionou
     if (f == NULL) {
-        printf("Erro ao abrir arquivo \n");
         return;
     }
 
@@ -81,7 +78,7 @@ void carregar_pessoas()
     modificado = 0;
 }
 
-// Adicionar pessoa no vetor
+// Adicionar UF no vetor
 void push_pessoas(const pessoa *pushed_pessoa) {
     // Verifica se o vetor (ppe) tem capacidade para mais um elemento
     if (num_pes >= capacidade) {
@@ -91,7 +88,7 @@ void push_pessoas(const pessoa *pushed_pessoa) {
         if (!ppe) return;
     }
 
-    // Colocaa a nova pessoa no primeiro espaço vago no vetor
+    // Coloca o novo uf no primeiro espaço vago no vetor
     ppe[num_pes++] = *pushed_pessoa;
 }
 
@@ -192,7 +189,14 @@ void inserir_pessoa()
 
 // Show uf
 void mostrar_pessoa()
-{
+{if (ppe == NULL) {
+    printf("Nao ha pessoas a serem exibidas. \n");
+    return;
+}
+    if (!(buscar_existenciap())) {
+        printf("Nao existem pessoas a serem exibidas. \n");
+        return;
+    }
     char cpf[12];
     printf("Digite o CPF da pessoa desejada: \n");
     fgets(cpf, sizeof(cpf), stdin);
@@ -246,6 +250,14 @@ void mostrartodos_pessoas() {
 
 // Delete
 void excluir_pessoa() {
+    if (ppe == NULL) {
+        printf("Nao ha pessoas a serem excluidas. \n");
+        return;
+    }
+    if (!(buscar_existenciap())) {
+        printf("Nao existem pessoas a serem excluidas. \n");
+        return;
+    }
     char cpf[12];
     printf("Digite o CPF da pessoa que deseja excluir: \n");
     fgets(cpf, sizeof(cpf), stdin);
@@ -272,6 +284,14 @@ void excluir_pessoa() {
 
 // Update
 void alterar_pessoa() {
+    if (ppe == NULL) {
+        printf("Nao ha pessoas a serem alteradas. \n");
+        return;
+    }
+    if (!(buscar_existenciap())) {
+        printf("Nao existem pessoas a serem alteradas. \n");
+        return;
+    }
     char cpf[12];
     printf("Digite o CPF da pessoa que deseja alterar: \n");
     fgets(cpf, sizeof(cpf), stdin);
