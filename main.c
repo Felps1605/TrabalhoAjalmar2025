@@ -2,16 +2,20 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "candidatos.h"
 #include "eleicoes.h"
 #include "UF.h"
 #include "pessoas.h"
 void estados();
 void pessoas();
+void eleicoes();
+void candidatos();
 void menu();
 int main() {
     loadUFs();
     carregar_pessoas();
     carregar_eleicoes();
+    carregar_candidatos();
     int op;
     do {
         menu();
@@ -27,6 +31,8 @@ int main() {
             case 3:
                 pessoas();
                 break;
+            case 4:
+                candidatos();
             case 0:break;
             default:printf("Opcao invalida\n");
         }
