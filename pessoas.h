@@ -5,7 +5,7 @@ typedef struct {
     char endereco[255];
     int data_nascimento[3]; //dia mes e ano, faz a matematica multiplicando
     char CPF[12]; //key
-    int existe;
+    int existe : 1;
 } pessoa;
 
 // Funções
