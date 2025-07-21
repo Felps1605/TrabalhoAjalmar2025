@@ -11,7 +11,7 @@ typedef struct {
     char CPF[12];
     int ano;
     int numero;
-    int existe : 1;
+    unsigned int existe : 1;
 } candidato;
 
 // Funções
