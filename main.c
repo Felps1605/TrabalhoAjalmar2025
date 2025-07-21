@@ -1,21 +1,24 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 #include "candidatos.h"
 #include "eleicoes.h"
-#include "UF.h"
+#include "uf.h"
 #include "pessoas.h"
+#include "votos.h"
+
 void estados();
 void pessoas();
 void eleicoes();
 void candidatos();
+void votos();
 void menu();
 int main() {
     loadUFs();
     carregar_pessoas();
     carregar_eleicoes();
     carregar_candidatos();
+    load_votos();
     int op;
     do {
         menu();
@@ -33,6 +36,10 @@ int main() {
                 break;
             case 4:
                 candidatos();
+                break;
+            case 5:
+                votos();
+                break;
             case 0:break;
             default:printf("Opcao invalida\n");
         }
@@ -49,5 +56,3 @@ void menu() {
     printf("| 0- SAIR                                    |\n");
     printf("|============================================|\n");
 };
-
-
