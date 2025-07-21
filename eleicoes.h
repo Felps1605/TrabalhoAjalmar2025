@@ -6,7 +6,7 @@ typedef struct {
     int codigoUF; //importado da UF e juntamente com o ano vai ser a chave primária
     char descricao[100];
     int ano;
-    int existe : 1;
+    unsigned int existe : 1;
 } eleicao;
 
 // Funções
