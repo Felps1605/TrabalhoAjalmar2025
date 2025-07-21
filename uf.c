@@ -1,4 +1,5 @@
 
+#include <ctype.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -104,8 +105,7 @@ void saveUF()
 }
 
 // Insere um novo UF
-void inserir()
-{
+void inserir() {
     // Ler o código
     int cod;
     do
@@ -130,34 +130,47 @@ void inserir()
 
     // Ler a sigla
     char sig[3];
-    do
-    {
+    int valida;
+    do {
         printf("Insira a sigla: \n");
         fgets(sig, sizeof(sig), stdin);
-        sig[strcspn(sig, "\n")] = '\0';
         faxineirojp();
-        if (buscar_sigla(sig)) {
-            if (puf[buscar_sigla(sig)].existe == 1 )
-                printf("Sigla ja esta em uso. \n");
-        }else
-            if (strlen(sig) != 2)
-                printf("Insira uma sigla valida \n");
-            else
+        sig[strcspn(sig, "\n")] = '\0';
+        valida = 1;
+        for (int i = 0; sig[i] != '\0'; i++) {
+            if (!isalpha(sig[i])) {
+                valida = 0;
                 break;
+            }
+        }
+        if (!valida || strlen(sig) == 0) {
+            printf("Entrada invalida. Digite apenas letras (sem numeros, espaços ou simbolos).\n");
+        }
+        else{
 
-    } while (1);
+            if (buscar_sigla(sig) != -1 ) {
+                if (puf[buscar_sigla(sig)].existe == 1 )
+                    printf("Sigla ja esta em uso. \n");
+            }else {
+                if (strlen(sig) != 2)
+                    printf("Insira uma sigla valida \n");
+                else
+                    break;
+            }
+        }
 
-    // Dá push no novo UF
-    uf temp;
-    temp.codigo = cod;
-    strcpy(temp.descricao, descri);
-    strcpy(temp.sigla, sig);
-    temp.existe = 1;
+} while (1);
 
-    pushUF(&temp);
-    modified = 1;
-    printf("%s foi inserido no sistema com sucesso. \n", temp.descricao);
+        // Dá push no novo UF
+        uf temp;
+        temp.codigo = cod;
+        strcpy(temp.descricao, descri);
+        strcpy(temp.sigla, sig);
+        temp.existe = 1;
 
+        pushUF(&temp);
+        modified = 1;
+        printf("%s foi inserido no sistema com sucesso. \n", temp.descricao);
 }
 
 // Show uf
@@ -176,9 +189,10 @@ void mostraruf()
                 return;
             }
             flag = 1;
-            printf("Codigo : %d \n", puf[i].codigo);
+            printf("------------------------\n");
             printf("Estado : %s \n", puf[i].descricao);
             printf("Sigla  : %s \n", puf[i].sigla);
+            printf("------------------------\n");
             break;
         }
     }
@@ -199,9 +213,11 @@ void mostrartodos()
         for (int i = 0; i < numufc; i++) {
             if (puf[i].existe == 0)
                 continue;
+            printf("------------------------\n");
             printf("Codigo : %d \n", puf[i].codigo);
             printf("Estado : %s \n", puf[i].descricao);
-            printf("Sigla  : %s \n\n", puf[i].sigla);
+            printf("Sigla  : %s \n", puf[i].sigla);
+            printf("------------------------\n");
 
         }
     }
@@ -270,15 +286,15 @@ void alterar() {
             fgets(descri, 100, stdin);
             descri[strcspn(descri, "\n")] = '\0';
             strcpy(puf[i].descricao, descri);
-
             char sig[3];
             do
             {
                 printf("Insira a sigla: \n");
                 fgets(sig, sizeof(sig), stdin);
                 sig[strcspn(sig, "\n")] = '\0';
+
                 faxineirojp();
-                if (buscar_sigla(sig)) {
+                if (buscar_sigla(sig) != -1) {
                     if (puf[buscar_sigla(sig)].existe == 1 )
                         printf("Sigla ja esta em uso. \n");
                 }else
@@ -288,6 +304,7 @@ void alterar() {
                         break;
 
             } while (1);
+            strcpy(puf[i].sigla, sig);
             modified = 1;
             printf("%s foi alterado no sistema com sucesso. \n", puf[i].descricao);
             break;
@@ -338,5 +355,5 @@ int buscar_sigla(char sig[3]) {
             }
         }
     }
-    return 0;
+    return -1;
 }
