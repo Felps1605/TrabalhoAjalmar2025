@@ -2,7 +2,7 @@ typedef struct {
     int codigo;
     char descricao[100];
     char sigla[3];
-    int existe : 1;
+    int existe;
 } uf;
 
 // Funções
