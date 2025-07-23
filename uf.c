@@ -146,8 +146,8 @@ void inserir() {
     } while (buscar_codigo(cod) >= 0 || cod < 1 || valido !=1);
 
     // Ler a descrição
+    char descri[100];
     do {
-        char descri[100];
         printf("Insira a descricao: \n");
         fgets(descri, 100, stdin);
         descri[strcspn(descri, "\n")] = '\0';
@@ -308,9 +308,9 @@ void alterar() {
                 return;
             }
 
-            
+            char descri[100];
             do {
-                char descri[100];
+
                 printf("Insira a descricao: \n");
                 fgets(descri, 100, stdin);
                 descri[strcspn(descri, "\n")] = '\0';
