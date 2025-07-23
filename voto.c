@@ -6,7 +6,7 @@
 #include "candidatos.h"
 #include "pessoas.h"
 #include "votos.h"
-#include "comparecimentos.h"
+#include "comparecimento.h"
 
 #define ARQ_VOTOS "votos.data"
 
@@ -20,17 +20,34 @@ void votos() {
         menu_voto();
         scanf("%d", &op);
         faxineirojp();
+
         switch (op) {
-            case 1: inserir_voto(); break;
-            case 2: listar_votos_por_candidato(); break;
-            case 3: listar_votos_por_ano(); break;
-            case 4: mostrar_comparecimento_por_eleicao(); break;
-            case 5: mostrar_comparecimento_por_ano(); break;
-            case 0: salvar_votos(); salvar_comparecimentos(); break;
-            default: printf("Opcao invalida. \n"); break;
+            case INSERIR_VOTO:
+                inserir_voto();
+                break;
+            case LISTAR_VOTOS_POR_CANDIDATO:
+                listar_votos_por_candidato();
+                break;
+            case LISTAR_VOTOS_POR_ANO:
+                listar_votos_por_ano();
+                break;
+            case MOSTRAR_COMPARECIMENTO_POR_ELEICAO:
+                mostrar_comparecimento_por_eleicao();
+                break;
+            case MOSTRAR_COMPARECIMENTO_POR_ANO:
+                mostrar_comparecimento_por_ano();
+                break;
+            case SAIR_VOTO:
+                salvar_votos();
+                salvar_comparecimentos();
+                break;
+            default:
+                printf("Opcao invalida.\n");
+                break;
         }
-    } while (op != 0);
+    } while (op != SAIR_VOTO);
 }
+
 
 // Menu de votos
 void menu_voto() {
@@ -264,6 +281,7 @@ void ordenacao_por_uf_voto()
 }
 
 int buscar_titulo_no_ano(char titulo[14], int ano){
+    int num_com;
     for (int i = 0; i < num_com; i++) {
         if (strcmp(pco[i].titulo, titulo) == 0 && pco[i].ano == ano)
             return i;
