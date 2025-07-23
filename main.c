@@ -44,6 +44,13 @@ int main() {
             default:printf("Opcao invalida\n");
         }
     }while (op != 0);
+    free(puf);
+    free(ppe);
+    free(pel);
+    free(pca);
+    free(pvo);
+    free(pco);
+    return 0;
 }
 void menu() {
     printf("|============================================|\n");
