@@ -1,4 +1,3 @@
-
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
@@ -368,8 +367,6 @@ void faxineirojp()
     while (getchar() != '\n')
         ;
 }
-
-// Menu
 void estados()
 {
     int opuf;
@@ -378,30 +375,31 @@ void estados()
         menuuf();
         scanf("%d", &opuf);
         faxineirojp();
+
         switch (opuf)
         {
-            case 1:
+            case INSERIR:
                 inserir();
                 break;
-            case 2:
+            case ALTERAR:
                 alterar();
                 break;
-            case 3:
+            case EXCLUIR:
                 excluir();
                 break;
-            case 4:
+            case MOSTRAR_TODOS:
                 mostrartodos();
                 break;
-            case 5:
+            case MOSTRAR_UF:
                 mostraruf();
                 break;
-            case 0:
+            case SAIR:
                 saveUF();
                 break;
             default:
-                printf("escolha uma opcao valida \n");
+                printf("Escolha uma opcao valida.\n");
                 break;
         }
 
-    } while (opuf != 0);
+    } while (opuf != SAIR);
 }
