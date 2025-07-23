@@ -121,6 +121,7 @@ void inserir_voto() {
         strcpy(comp.titulo, titulo );
         push_comparecimentos(&comp);
         printf("Voto registrado com sucesso!\n");
+        ordenacao_por_uf_voto();
 }
 // Valida os dados do voto verificando a existência dos dados relacionados
 int validar_dados_voto(int ano, int cod, int num_candidato, char titulo[14]) {
@@ -157,7 +158,7 @@ int validar_dados_voto(int ano, int cod, int num_candidato, char titulo[14]) {
         return 0;
     }
     if (buscar_titulo_no_ano(titulo, ano) != -1) {
-         printf("%s ja votou nesse ano. \n", ppe[buscar_titulo(titulo)].nome);
+        printf("%s ja votou nesse ano. \n", ppe[buscar_titulo(titulo)].nome);
         return 0;
     }
     return 1;
@@ -207,7 +208,7 @@ void listar_votos_por_candidato() {
         if (pvo[i].ano == ano && pvo[i].numero_candidato == num_candidato) {
             printf("CodigoUF:            %d \n", pvo[i].codigo_UF);
             printf("Numero do candidato: %d \n", pvo[i].numero_candidato);
-            printf("Data e hora:         %s \n", pvo[i].data_hora);
+            printf("Data e hora:         %s \n \n", pvo[i].data_hora);
             flag = 1;
         }
     }if (flag == 0)
@@ -224,7 +225,7 @@ void listar_votos_por_ano() {
         if (pvo[i].ano == ano) {
             printf("CodigoUF:            %d \n", pvo[i].codigo_UF);
             printf("Numero do candidato: %d \n", pvo[i].numero_candidato);
-            printf("Data e hora:         %s \n", pvo[i].data_hora);
+            printf("Data e hora:         %s \n \n", pvo[i].data_hora);
             flag = 1;
         }
 
@@ -247,4 +248,25 @@ void salvar_votos()
     fclose(f);
     printf("Alteracoes salvas com sucesso! \n");
 
+}
+
+void ordenacao_por_uf_voto()
+{
+    for (int i = 0; i < (num_vot - 1 ); i++) {
+        for (int j = (i + 1); j < num_vot; j++) {
+            if (pvo[i].codigo_UF > pvo[j].codigo_UF) {
+                voto aux = pvo[i];
+                pvo[i] = pvo[j];
+                pvo[j] = aux;
+            }
+        }
+    }
+}
+
+int buscar_titulo_no_ano(char titulo[14], int ano){
+    for (int i = 0; i < num_com; i++) {
+        if (strcmp(pco[i].titulo, titulo) == 0 && pco[i].ano == ano)
+            return i;
+    }
+    return -1;
 }
