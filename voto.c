@@ -6,6 +6,7 @@
 #include "candidatos.h"
 #include "pessoas.h"
 #include "votos.h"
+#include "comparecimentos.h"
 
 #define ARQ_VOTOS "votos.data"
 
@@ -21,21 +22,21 @@ void votos() {
         faxineirojp();
         switch (op) {
             case 1: inserir_voto(); break;
-//            case 2: listar_votos_por_candidato(); break;
+            case 2: listar_votos_por_candidato(); break;
             case 3: listar_votos_por_ano(); break;
             case 4: mostrar_comparecimento_por_eleicao(); break;
-//            case 5: mostrar_comparecimento_por_ano(); break;
-            case 0: salvar_votos(); break;
+            case 5: mostrar_comparecimento_por_ano(); break;
+            case 0: salvar_votos(); salvar_comparecimentos(); break;
+            default: printf("Opcao invalida. \n"); break;
         }
     } while (op != 0);
 }
 
 // Menu de votos
 void menu_voto() {
-    load_votos();
     printf("|============================================|\n");
     printf("| 1- INSERIR                                 |\n");
-    printf("| 2- LISTAR VOTOS POR ELEICAO                |\n");
+    printf("| 2- LISTAR VOTOS POR CANDIDATO/ELEICAO      |\n");
     printf("| 3- LISTAR VOTOS POR ANO                    |\n");
     printf("| 4- MOSTRAR COMPARECIMENTO POR ELEICAO      |\n");
     printf("| 5- MOSTRAR COMPARECIMENTO POR ANO          |\n");
@@ -44,18 +45,12 @@ void menu_voto() {
 }
 
 
-// Valida os dados do voto verificando a existência dos dados relacionados
-int validar_dados_voto(int ano, int codUF, char cpf[]) {
-    if (buscar_eleicao(codUF, ano) < 0) return 0;
-    if (buscar_codigo(codUF) < 0) return 0;
-    if (buscar_cpf_por_ano(cpf, ano) < 0) return 0;
-    return 1;
-}
 
 // Carrega votos do arquivo
 void load_votos() {
     FILE *f = fopen(ARQ_VOTOS, "rb");
-    if (!f) return;
+    if (!f)
+        return;
 
     voto temp;
     while (fread(&temp, sizeof(voto), 1, f) == 1) {
@@ -65,120 +60,183 @@ void load_votos() {
 }
 
 // Insere voto no vetor com realocação dinâmica
-void push_voto(voto novo) {
+void push_voto(const voto *pushedvoto) {
+    // Verifica se o vetor (pvo) tem capacidade para mais um elemento
     if (num_vot >= capacidadeVotos) {
-        capacidadeVotos = (capacidadeVotos == 0) ? 10 : capacidadeVotos + 10;
-        voto *temp = realloc(pvo, sizeof(voto) * capacidadeVotos);
-        if (!temp) {
-            printf("Erro ao alocar memória para votos.\n");
-            return;
-        }
-        pvo = temp;
+        // Adiciona mais 10 espaços no vetor realocando a memória
+        capacidadeVotos = (capacidadeVotos == 0 ? 10 : capacidadeVotos + 10);
+        pvo = (voto *)realloc(pvo, sizeof(voto) * capacidadeVotos);
+        if (!pvo) return;
     }
-    pvo[num_vot++] = novo;
+
+    // Coloca o novo uf no primeiro espaço vago no vetor
+    pvo[num_vot++] = *pushedvoto;
 }
 
 // Inserção de novo voto
 void inserir_voto() {
-    voto v;
+    voto temp;
     int ano;
     int cod;
     int num_candidato;
-    char data;
-    printf("Ano da eleição: \n");
+    char data[20];
+    char titulo[14];
+
+    comparecimento comp;
+
+    printf("Insira o titulo do eleitor: ");
+    fgets(titulo, 14, stdin);
+    faxineirojp();
+    titulo[strcspn(titulo, "\n")] = '\0';
+
+    printf("Ano da eleicao: ");
     scanf("%d", &ano);
     faxineirojp();
 
-    printf("Código da UF: \n");
+    printf("Codigo da UF: ");
     scanf("%d", &cod);
     faxineirojp();
 
-    printf("Número do candidato: \n");
+    printf("Numero do candidato: ");
     scanf("%d", &num_candidato);
     faxineirojp();
 
-    printf("Data e hora (DD/MM/AAAA HH:MM): \n");
-    fgets(data, sizeof(char), stdin);
-    v.data_hora[strcspn(v.data_hora, "\n")] = '\0';
+    printf("Data e hora (DD/MM/AAAA HH:MM): ");
+    fgets(data, sizeof(data), stdin);
+    data[strcspn(data, "\n")] = '\0';
 
-    if (!validar_dados_voto(v.ano, v.codigo_UF, v.numero_candidato)) {
+    if (!validar_dados_voto(ano, cod, num_candidato, titulo)) {
         printf("Dados inválidos!\n");
         return;
     }
-}
 
-/*void push_candidatos(const candidato *pushedcandidato) {
-    // Verifica se o vetor (pca) tem capacidade para mais um elemento
-    if (num_can >= capacidade_ca) {
-        // Adiciona mais 10 espaços no vetor realocando a memória
-        capacidade_ca = (capacidade_ca == 0 ? 10 : capacidade_ca + 10);
-        pca = (candidato *)realloc(pca, sizeof(candidato) * capacidade_ca);
-        if (!pca) return;
+        temp.ano = ano;
+        temp.codigo_UF = cod;
+        temp.numero_candidato = num_candidato;
+        strcpy(temp.data_hora, data);
+        push_voto(&temp);
+
+        comp.codigo_UF = cod;
+        comp.ano = ano;
+        strcpy(comp.titulo, titulo );
+        push_comparecimentos(&comp);
+        printf("Voto registrado com sucesso!\n");
+}
+// Valida os dados do voto verificando a existência dos dados relacionados
+int validar_dados_voto(int ano, int cod, int num_candidato, char titulo[14]) {
+    if (buscar_titulo(titulo)== -1){
+        printf("Eleitor nao encontrado. \n");
+        return 0;
     }
-
-    // Coloca o novo candidato no primeiro espaço vago no vetor
-    pca[num_can++] = *pushedcandidato;
-}*/
-
-// Comparador por UF para qsort
-int compararVotosPorUF(const void *a, const void *b) {
-    const voto *v1 = (const voto *)a;
-    const voto *v2 = (const voto *)b;
-    return v1->codigo_UF - v2->codigo_UF;
+    if (ppe[buscar_titulo(titulo)].existe == 0) {
+        printf("Eleitor nao encontrado*. \n");
+        return 0;
+    }
+    if (buscar_codigo(cod)== -1) {
+        printf("UF nao encontrada.\n");
+        return 0;
+    }
+    if (puf[buscar_codigo(cod)].existe == 0) {
+        printf("UF nao encontrada*.\n");
+        return 0;
+    }
+    if (buscar_eleicao(cod, ano)== -1){
+        printf("Eleicao nao encontrada. \n");
+        return 0;
+    }
+    if (pel[buscar_eleicao(cod, ano)].existe == 0) {
+        printf("Eleicao nao encontrada*. \n");
+        return 0;
+    }
+    if (buscar_numero(num_candidato)== -1) {
+        printf("Candidato nao encontrado. \n");
+        return 0;
+    }
+    if (pca[buscar_numero(num_candidato)].existe == 0) {
+        printf("Candidato nao encontrado*. \n");
+        return 0;
+    }
+    if (buscar_titulo_no_ano(titulo, ano) != -1) {
+         printf("%s ja votou nesse ano. \n", ppe[buscar_titulo(titulo)].nome);
+        return 0;
+    }
+    return 1;
 }
 
+void listar_votos_por_candidato() {
+    int ano, flag = 0;
+    printf("Digite o ano das eleicoes: ");
+    scanf("%d", &ano);
+    faxineirojp();
+
+    int cod;
+    printf("Codigo da UF: ");
+    scanf("%d", &cod);
+    faxineirojp();
+
+    int num_candidato;
+    printf("Numero do candidato: ");
+    scanf("%d", &num_candidato);
+    faxineirojp();
+
+        if (buscar_codigo(cod)== -1) {
+            printf("UF nao encontrada.\n");
+            return ;
+        }
+        if (puf[buscar_codigo(cod)].existe == 0) {
+            printf("UF nao encontrada*.\n");
+            return ;
+        }
+        if (buscar_eleicao(cod, ano)== -1){
+            printf("Eleicao nao encontrada. \n");
+            return ;
+        }
+        if (pel[buscar_eleicao(cod, ano)].existe == 0) {
+            printf("Eleicao nao encontrada*. \n");
+            return ;
+        }
+        if (buscar_numero(num_candidato)== -1) {
+            printf("Candidato nao encontrado. \n");
+            return ;
+        }
+        if (pca[buscar_numero(num_candidato)].existe == 0) {
+            printf("Candidato nao encontrado*. \n");
+            return ;
+        }
+    for (int i = 0; i < num_candidato; i++) {
+        if (pvo[i].ano == ano && pvo[i].numero_candidato == num_candidato) {
+            printf("CodigoUF:            %d \n", pvo[i].codigo_UF);
+            printf("Numero do candidato: %d \n", pvo[i].numero_candidato);
+            printf("Data e hora:         %s \n", pvo[i].data_hora);
+            flag = 1;
+        }
+    }if (flag == 0)
+        printf("Esse candidato nao recebeu votos nessa eleicao. \n");
+}
 // Lista todos os votos de um ano, ordenando por UF
 void listar_votos_por_ano() {
-    int ano;
-    printf("Digite o ano da eleição: ");
+    int ano, flag = 0;
+    printf("Digite o ano das eleicoes: ");
     scanf("%d", &ano);
-    getchar();
-
-    int encontrados = 0;
-    voto *filtro = malloc(num_vot * sizeof(voto));
-    if (!filtro) {
-        printf("Erro ao alocar memória.\n");
-        return;
-    }
+    faxineirojp();
 
     for (int i = 0; i < num_vot; i++) {
         if (pvo[i].ano == ano) {
-            filtro[encontrados++] = pvo[i];
+            printf("CodigoUF:            %d \n", pvo[i].codigo_UF);
+            printf("Numero do candidato: %d \n", pvo[i].numero_candidato);
+            printf("Data e hora:         %s \n", pvo[i].data_hora);
+            flag = 1;
         }
+
     }
-
-    qsort(filtro, encontrados, sizeof(votos), compararVotosPorUF);
-
-    for (int i = 0; i < encontrados; i++) {
-        printf("UF: %d | Candidato: %d | CPF: %s | Data/Hora: %s\n",
-               filtro[i].codigo_UF,
-               filtro[i].numero_candidato,
-               filtro[i].data_hora);
+    if (flag == 0) {
+        printf("Nao houve votos nesse ano. \n");
     }
-
-    free(filtro);
 }
 
-// Mostra número total de comparecimentos por UF em um determinado ano
-void mostrar_comparecimento_por_eleicao() {
-    int ano, codUF, total = 0;
-    printf("Ano: ");
-    scanf("%d", &ano);
-    printf("Código UF: ");
-    scanf("%d", &codUF);
-    getchar();
-
-    for (int i = 0; i < num_vot; i++) {
-        if (pvo[i].ano == ano && pvo[i].codigo_UF == codUF) {
-            total++;
-        }
-    }
-
-    printf("Comparecimento total na UF %d no ano %d: %d votos\n", codUF, ano, total);
-}
 
 // Salva todos os votos em arquivo (sobrescreve)
-void salvar_candidatos()
+void salvar_votos()
 {
     FILE *f = fopen(ARQ_VOTOS, "wb");
     if (f == NULL) {
@@ -188,7 +246,5 @@ void salvar_candidatos()
     fwrite(pvo, sizeof(voto), num_vot, f);
     fclose(f);
     printf("Alteracoes salvas com sucesso! \n");
+
 }
-
-
-
