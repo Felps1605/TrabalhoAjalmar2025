@@ -2,9 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "eleicoes.h"
-
 #include <ctype.h>
-
 #include "uf.h"
 
 #define FILENAME "eleicoes.data"
@@ -22,33 +20,35 @@ void eleicoes()
         menu_eleicao();
         scanf("%d", &opel);
         faxineirojpe();
+
         switch (opel)
         {
-        case 1:
-            inserir_eleicao();
-            break;
-        case 2:
-            alterar_eleicao();
-            break;
-        case 3:
-            excluir_eleicao();
-            break;
-        case 4:
-            mostrartodos_eleicoes();
-            break;
-        case 5:
-            mostrar_eleicao();
-            break;
-        case 0:
-            salvar_eleicoes();
-            break;
-        default:
-            printf("Opcao invalida. \n");
-            break;
+            case INSERIR_ELEICAO:
+                inserir_eleicao();
+                break;
+            case ALTERAR_ELEICAO:
+                alterar_eleicao();
+                break;
+            case EXCLUIR_ELEICAO:
+                excluir_eleicao();
+                break;
+            case MOSTRAR_TODAS_ELEICOES:
+                mostrartodos_eleicoes();
+                break;
+            case MOSTRAR_ELEICAO:
+                mostrar_eleicao();
+                break;
+            case SAIR_ELEICAO:
+                salvar_eleicoes();
+                break;
+            default:
+                printf("Opcao invalida.\n");
+                break;
         }
 
-    } while (opel != 0);
+    } while (opel != SAIR_ELEICAO);
 }
+
 void menu_eleicao()
 {
     printf("|============================================|\n");
