@@ -56,13 +56,6 @@ void salvar_comparecimentos()
     free(pco);
 }
 
-int buscar_titulo_no_ano(char titulo[14], int ano){
-    for (int i = 0; i < num_com; i++) {
-       if (titulo == pco[i].titulo && pco[i].ano == ano)
-           return i;
-    }
-    return -1;
-}
 void mostrar_comparecimento_por_eleicao() {
     int ano, codUF, total = 0;
     printf("Ano: ");
