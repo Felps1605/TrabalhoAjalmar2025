@@ -140,7 +140,7 @@ void inserir_candidato()
     } while (1);
 
     // Ler o cpf
-    char cpf[12];
+    char cpf[20];
     do {
         printf("Insira o CPF: \n");
         fgets(cpf, sizeof(cpf), stdin);
