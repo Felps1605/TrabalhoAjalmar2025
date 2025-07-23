@@ -3,10 +3,11 @@
 #include <stdlib.h>
 #include "eleicoes.h"
 
-#include "UF.h"
+#include <ctype.h>
+
+#include "uf.h"
 
 #define FILENAME "eleicoes.data"
-
 eleicao *pel = NULL;
 int num_elei = 0;
 int capacidade_el = 0;
@@ -109,19 +110,36 @@ void salvar_eleicoes()
 void inserir_eleicao()
 {
     // Ler o código
+    char entrada[100];
     int cod;
-        printf("Insira o codigo da UF: \n");
-        scanf("%d", &cod);
-        faxineirojpe();
-        if (cod < 1 )
-        {
-            printf("Codigo invalido! Precisa ser maior que 0! \n");
-            return;
+    int valido;
+
+    do {
+        valido = 1;  // Assumimos que a entrada será válida
+
+        printf("Insira o codigo:\n");
+        fgets(entrada, sizeof(entrada), stdin);
+        entrada[strcspn(entrada, "\n")] = '\0'; // Remove o \n
+        faxineirojp();
+        // Verifica se todos os caracteres são dígitos
+        for (int i = 0; entrada[i] != '\0'; i++) {
+            if (!isdigit(entrada[i])) {
+                valido = 0;
+                break;
+            }
         }
+
+        if (valido != 1) {
+            printf("Entrada invalida! Digite apenas numeros inteiros positivos.\n");
+            continue;  // volta para o início do laço
+        }
+
+        cod = atoi(entrada);  // Converte a string para inteiro
         if (buscar_codigo(cod) == -1 || puf[buscar_codigo(cod)].existe == 0) {
             printf("Insira o codigo de uma UF que esteja no banco de dados! \n");
             return;
         }
+    }while (buscar_codigo(cod) == -1 || puf[buscar_codigo(cod)].existe == 0 || valido != 1);
 
     // Ler a descrição
     char descri[100];
@@ -136,11 +154,18 @@ void inserir_eleicao()
         printf("Insira o ano: \n");
         scanf("%d", &ano);
         faxineirojpe();
-        if (buscar_eleicao(cod, ano) != -1) {
-            if (buscar_existencia_eleicao(cod, ano)==1)
-                printf("Ja existe uma eleicao nesse estado nesse ano. \n");
-        }else
-            break;
+        if (ano < 1900 || ano > 3000) {
+            printf("Insira uma ano que esteja dentro do intervalo de tempo(1900 ate 3000): \n");
+            continue;
+        }
+        else {
+            if (buscar_eleicao(cod, ano) != -1) {
+                if (buscar_existencia_eleicao(cod, ano)==1)
+                    printf("Ja existe uma eleicao nesse estado nesse ano. \n");
+                continue;
+            }
+        }
+        break;
 
     } while (1);
 
