@@ -124,7 +124,7 @@ void inserir_pessoa()
         // Verifica caractere por caractere
         for (int i = 0; nom[i] != '\0'; i++) {
             if (isalpha(nom[i])) {
-                tem_letra = 1;  // Pelo menos uma letra foi encontrada
+                tem_letra = 3;  // Pelo menos uma letra foi encontrada
             } else if (nom[i] != ' ') {
                 valido = 0;  // Encontrou algo que não é letra nem espaço
                 break;
@@ -161,14 +161,15 @@ void inserir_pessoa()
         // Verifica tamanho e se é só número
         if (!valido || strlen(cpf) != 11) {
             printf("Insira um CPF valido com 11 digitos numericos.\n");
-            continue;
-        }
-
-        // Verifica duplicidade
-        if (buscar_cpf(cpf)) {
-            printf("CPF ja esta cadastrado no sistema.\n");
             valido = 0;
         }
+
+        else
+        // Verifica duplicidade
+            if (buscar_cpf(cpf)) {
+                printf("CPF ja esta cadastrado no sistema.\n");
+                valido = 0;
+            }
 
     } while (!valido);
 
@@ -189,7 +190,7 @@ void inserir_pessoa()
         }
         if (!valido || strlen(tit_ele) != 13) {
             printf("Insira um titulo valido \n");
-            continue;
+            valido = 0;
         }
         if (buscar_titulo(tit_ele)) {
             printf("Titulo de eleitor ja esta cadastrado no sistema. \n");
@@ -203,34 +204,24 @@ void inserir_pessoa()
     do {
         valido = 1;
 
-        printf("Insira o telefone (formato: xx 9xxxxxxxx): \n");
+        printf("Insira o telefone (formato: xx9xxxxxxxx): \n");
         fgets(fone, sizeof(fone), stdin);
         fone[strcspn(fone, "\n")] = '\0';  // Remove o '\n'
-
         faxineirojpp();
-
-        // Verifica o comprimento
-        if (strlen(fone) != 13) {
-            valido = 0;
-        } else {
+        if (strlen(fone) > 0) {
             // Verifica cada caractere
             for (int i = 0; i < 13; i++) {
-                if (i == 2) {
-                    if (fone[i] != ' ') {
                         valido = 0;
                         break;
-                    }
-                } else {
-                    if (!isdigit(fone[i])) {
+                if (!isdigit(fone[i])) {
                         valido = 0;
                         break;
-                    }
                 }
             }
         }
 
         if (valido != 1) {
-            printf("Telefone invalido! Use o formato: xx 9xxxxxxxx (somente numeros e 1 espaco apos o DDD).\n");
+            printf("Telefone invalido! Use o formato: xx9xxxxxxxx (somente numeros e 1 espaco apos o DDD).\n");
         }
 
     } while (!valido);
@@ -251,7 +242,7 @@ void inserir_pessoa()
     strcpy(temp.nome , nom);
     strcpy(temp.CPF, cpf);
     strcpy(temp.titulo, tit_ele);
-    temp.telefone = fone;
+    strcpy(temp.telefone, fone);
     strcpy(temp.endereco, endere);
     temp.data_nascimento[0] = data_nasc[0];
     temp.data_nascimento[1] = data_nasc[1];
@@ -419,34 +410,24 @@ void alterar_pessoa() {
             do {
                 valido = 1;
 
-                printf("Insira o novo telefone (formato: xx 9xxxxxxxx): \n");
+                printf("Insira o telefone (formato: xx9xxxxxxxx): \n");
                 fgets(fone, sizeof(fone), stdin);
                 fone[strcspn(fone, "\n")] = '\0';  // Remove o '\n'
-
                 faxineirojpp();
-
-                // Verifica o comprimento
-                if (strlen(fone) != 13) {
-                    valido = 0;
-                } else {
+                if (strlen(fone) > 0) {
                     // Verifica cada caractere
                     for (int i = 0; i < 13; i++) {
-                        if (i == 2) {
-                            if (fone[i] != ' ') {
-                                valido = 0;
-                                break;
-                            }
-                        } else {
-                            if (!isdigit(fone[i])) {
-                                valido = 0;
-                                break;
-                            }
+                        valido = 0;
+                        break;
+                        if (!isdigit(fone[i])) {
+                            valido = 0;
+                            break;
                         }
                     }
                 }
 
-                if (!valido) {
-                    printf("Telefone invalido! Use o formato: xx 9xxxxxxxx (somente numeros e 1 espaco apos o DDD).\n");
+                if (valido != 1) {
+                    printf("Telefone invalido! Use o formato: xx9xxxxxxxx (somente numeros e 1 espaco apos o DDD).\n");
                 }
 
             } while (!valido);
@@ -458,7 +439,7 @@ void alterar_pessoa() {
             endere[strcspn(endere, "\n")] = '\0';
 
             // Dá push na nova pessoa
-            ppe[i].telefone = fone;
+            strcpy(ppe[i].telefone, fone);
             strcpy(ppe[i].endereco, endere);
             strcpy(ppe[i].nome, nom);
             printf("%s foi alterado no sistema com sucesso. \n", ppe[i].nome);
