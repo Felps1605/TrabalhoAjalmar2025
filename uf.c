@@ -146,10 +146,16 @@ void inserir() {
     } while (buscar_codigo(cod) >= 0 || cod < 1 || valido !=1);
 
     // Ler a descrição
-    char descri[100];
-    printf("Insira a descricao: \n");
-    fgets(descri, 100, stdin);
-    descri[strcspn(descri, "\n")] = '\0';
+    do {
+        char descri[100];
+        printf("Insira a descricao: \n");
+        fgets(descri, 100, stdin);
+        descri[strcspn(descri, "\n")] = '\0';
+        if (strlen(descri) == 0)
+            printf("Insira uma descricao valida \n");
+        else
+            break;
+    }while (1);
 
     // Ler a sigla
     char sig[3];
@@ -302,13 +308,19 @@ void alterar() {
                 return;
             }
 
-
-
-            char descri[100];
-            printf("insira a descricao: \n");
-            fgets(descri, 100, stdin);
-            descri[strcspn(descri, "\n")] = '\0';
+            
+            do {
+                char descri[100];
+                printf("Insira a descricao: \n");
+                fgets(descri, 100, stdin);
+                descri[strcspn(descri, "\n")] = '\0';
+                if (strlen(descri) == 0)
+                    printf("Insira uma descricao valida \n");
+                else
+                    break;
+            }while (1);
             strcpy(puf[i].descricao, descri);
+
 
 
             char sig[3];
