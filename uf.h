@@ -1,3 +1,4 @@
+
 typedef struct {
     int codigo;
     char descricao[100];
@@ -5,9 +6,17 @@ typedef struct {
     unsigned int existe: 1;
 } uf;
 extern uf *puf;
-// Funções
 
-// Menu
+
+typedef enum {
+    SAIR = 0,
+    INSERIR = 1,
+    ALTERAR = 2,
+    EXCLUIR = 3,
+    MOSTRAR_TODOS = 4,
+    MOSTRAR_UF = 5
+} OpcaoUF;
+
 void estados();
 void menuuf();
 
