@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "pessoas.h"
-#include "UF.h"
+#include "uf.h"
 
 #define FILENAME "pessoas.data"
 pessoa *ppe = NULL;
@@ -20,33 +20,35 @@ void pessoas()
         menupessoas();
         scanf("%d", &oppe);
         faxineirojp();
+
         switch (oppe)
         {
-        case 1:
-            inserir_pessoa();
-            break;
-        case 2:
-            alterar_pessoa();
-            break;
-        case 3:
-           excluir_pessoa();
-            break;
-        case 4:
-            mostrartodos_pessoas();
-            break;
-        case 5:
-            mostrar_pessoa();
-            break;
-        case 0:
-            salvar_pessoas();
-            break;
-        default:
-            printf("Opcao invalida. \n");
-            break;
+            case INSERIR_PESSOA:
+                inserir_pessoa();
+                break;
+            case ALTERAR_PESSOA:
+                alterar_pessoa();
+                break;
+            case EXCLUIR_PESSOA:
+                excluir_pessoa();
+                break;
+            case MOSTRAR_TODAS_PESSOAS:
+                mostrartodos_pessoas();
+                break;
+            case MOSTRAR_PESSOA:
+                mostrar_pessoa();
+                break;
+            case SAIR_PESSOA:
+                salvar_pessoas();
+                break;
+            default:
+                printf("Opcao invalida.\n");
+                break;
         }
 
-    } while (oppe != 0);
+    } while (oppe != SAIR_PESSOA);
 }
+
 void menupessoas()
 {
     printf("|============================================|\n");
