@@ -1,10 +1,10 @@
+#include <ctype.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include "pessoas.h"
 
 #define FILENAME "pessoas.data"
-
 pessoa *ppe = NULL;
 int num_pes = 0;
 int capacidade = 0;
@@ -110,52 +110,130 @@ void salvar_pessoas()
 void inserir_pessoa()
 {
     // Ler o nome
-    char nom[255];
-    printf("Insira o nome: \n");
-    fgets(nom, 100, stdin);
-    nom[strcspn(nom, "\n")] = '\0';
+    char nom[250];
+    int valido;
+
+    do {
+        valido = 1;  // Começa assumindo que a entrada é válida
+        int tem_letra = 0;  // Para garantir que há pelo menos uma letra
+
+        printf("Insira o nome (somente letras e espaços): \n");
+        fgets(nom, sizeof(nom), stdin);
+        nom[strcspn(nom, "\n")] = '\0';  // Remove o '\n' do final da entrada
+
+        // Verifica caractere por caractere
+        for (int i = 0; nom[i] != '\0'; i++) {
+            if (isalpha(nom[i])) {
+                tem_letra = 1;  // Pelo menos uma letra foi encontrada
+            } else if (nom[i] != ' ') {
+                valido = 0;  // Encontrou algo que não é letra nem espaço
+                break;
+            }
+        }
+
+        // Verifica se há ao menos uma letra e se os caracteres são válidos
+        if (!valido || !tem_letra) {
+            printf("Entrada invalida! Digite apenas letras e espaços (sem números ou símbolos).\n");
+            valido = 0;
+        }
+
+    } while (!valido);
 
     // Ler o cpf
-    char cpf[12];
+    char cpf[20];  // Maior que 12 para evitar overflow por erro do usuário
     do {
-        printf("Insira o CPF: \n");
-        fgets(cpf, sizeof(cpf), stdin);
-        cpf[strcspn(cpf, "\n")] = '\0';
-        faxineirojpp();
-        if (buscar_cpf(cpf)) {
-            printf("CPF ja esta cadastrado no sistema. \n");
-        }else
-            if (strlen(cpf) != 11)
-                printf("Insira um CPF valido \n");
-            else
-                break;
+        valido = 1;
 
-    } while (1);
+        printf("Insira o CPF (somente numeros, sem pontos ou tracos): \n");
+        fgets(cpf, sizeof(cpf), stdin);
+        cpf[strcspn(cpf, "\n")] = '\0';  // Remove o \n final
+
+        faxineirojpp();
+
+        // Verifica se só contém dígitos
+        for (int i = 0; cpf[i] != '\0'; i++) {
+            if (!isdigit(cpf[i])) {
+                valido = 0;
+                break;
+            }
+        }
+
+        // Verifica tamanho e se é só número
+        if (!valido || strlen(cpf) != 11) {
+            printf("Insira um CPF valido com 11 digitos numericos.\n");
+            continue;
+        }
+
+        // Verifica duplicidade
+        if (buscar_cpf(cpf)) {
+            printf("CPF ja esta cadastrado no sistema.\n");
+            valido = 0;
+        }
+
+    } while (!valido);
 
     // Ler o titulo
     char tit_ele[14];
     do
     {
-        printf("Insira o titulo de eleitor: \n");
+        printf("Insira o titulo (somente numeros, sem pontos ou tracos): \n");
         fgets(tit_ele, sizeof(tit_ele), stdin);
         tit_ele[strcspn(tit_ele, "\n")] = '\0';
         faxineirojpp();
+
+        for (int i = 0; tit_ele[i] != '\0'; i++) {
+            if (!isdigit(tit_ele[i])) {
+                valido = 0;
+                break;
+            }
+        }
+        if (!valido || strlen(tit_ele) != 13) {
+            printf("Insira um titulo valido \n");
+            continue;
+        }
         if (buscar_titulo(tit_ele)) {
             printf("Titulo de eleitor ja esta cadastrado no sistema. \n");
-        }else
-            if (strlen(tit_ele) != 13)
-                printf("Insira um titulo valido \n");
-            else
-                break;
+        }
 
-    } while (1);
+
+    } while (!valido);
 
     //telefone
-    unsigned long int fone;
-    printf("Insira o telefone*: \n");
-    scanf("%d", &fone);
-    faxineirojpp();
+    char fone[14];
+    do {
+        valido = 1;
 
+        printf("Insira o telefone (formato: xx 9xxxxxxxx): \n");
+        fgets(fone, sizeof(fone), stdin);
+        fone[strcspn(fone, "\n")] = '\0';  // Remove o '\n'
+
+        faxineirojpp();
+
+        // Verifica o comprimento
+        if (strlen(fone) != 13) {
+            valido = 0;
+        } else {
+            // Verifica cada caractere
+            for (int i = 0; i < 13; i++) {
+                if (i == 2) {
+                    if (fone[i] != ' ') {
+                        valido = 0;
+                        break;
+                    }
+                } else {
+                    if (!isdigit(fone[i])) {
+                        valido = 0;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (valido != 1) {
+            printf("Telefone invalido! Use o formato: xx 9xxxxxxxx (somente numeros e 1 espaco apos o DDD).\n");
+        }
+
+    } while (!valido);
     //endereço
     char endere[255];
     printf("Insira o endereco \n");
@@ -215,7 +293,7 @@ void mostrar_pessoa()
             printf("CPF             : %s \n", ppe[i].CPF);
             printf("Data_nascimento : %d/%d/%d\n", ppe[i].data_nascimento[0], ppe[i].data_nascimento[1], ppe[i].data_nascimento[2]);
             printf("Titulo          : %s \n", ppe[i].titulo);
-            printf("Telefone        : %d \n", ppe[i].telefone);
+            printf("Telefone        : %s \n", ppe[i].telefone);
             printf("Endereco        : %s \n \n", ppe[i].endereco);
             break;
         }
@@ -240,7 +318,7 @@ void mostrartodos_pessoas() {
             printf("CPF             : %s \n", ppe[i].CPF);
             printf("Data_nascimento : %d/%d/%d\n", ppe[i].data_nascimento[0], ppe[i].data_nascimento[1], ppe[i].data_nascimento[2]);
             printf("Titulo          : %s \n", ppe[i].titulo);
-            printf("Telefone        : %d \n", ppe[i].telefone);
+            printf("Telefone        : %s \n", ppe[i].telefone);
             printf("Endereco        : %s \n", ppe[i].endereco);
         }
 
@@ -298,6 +376,7 @@ void alterar_pessoa() {
     faxineirojpp();
     int flag = 0;
 
+    int valido;
 
     for (int i = 0; i <= num_pes; i++)
     {
@@ -308,15 +387,69 @@ void alterar_pessoa() {
             }
             flag = 1;
             char nom[255];
-            printf("Insira o novo nome: \n");
-            fgets(nom, 100, stdin);
-            nom[strcspn(nom, "\n")] = '\0';
+
+            do {
+                valido = 1;  // Começa assumindo que a entrada é válida
+                int tem_letra = 0;  // Para garantir que há pelo menos uma letra
+
+                printf("Insira o novo nome: \n");
+                fgets(nom, sizeof(nom), stdin);
+                nom[strcspn(nom, "\n")] = '\0';  // Remove o '\n' do final da entrada
+
+                // Verifica caractere por caractere
+                for (int i = 0; nom[i] != '\0'; i++) {
+                    if (isalpha(nom[i])) {
+                        tem_letra = 1;  // Pelo menos uma letra foi encontrada
+                    } else if (nom[i] != ' ') {
+                        valido = 0;  // Encontrou algo que não é letra nem espaço
+                        break;
+                    }
+                }
+
+                // Verifica se há ao menos uma letra e se os caracteres são válidos
+                if (!valido || !tem_letra) {
+                    printf("Entrada invalida! Digite apenas letras e espaços (sem números ou símbolos).\n");
+                    valido = 0;
+                }
+
+            } while (!valido);
 
             //telefone
-            unsigned long int fone;
-            printf("Insira o novo telefone*: \n");
-            scanf("%d", &fone);
-            faxineirojpp();
+            char fone[14];
+            do {
+                valido = 1;
+
+                printf("Insira o novo telefone (formato: xx 9xxxxxxxx): \n");
+                fgets(fone, sizeof(fone), stdin);
+                fone[strcspn(fone, "\n")] = '\0';  // Remove o '\n'
+
+                faxineirojpp();
+
+                // Verifica o comprimento
+                if (strlen(fone) != 13) {
+                    valido = 0;
+                } else {
+                    // Verifica cada caractere
+                    for (int i = 0; i < 13; i++) {
+                        if (i == 2) {
+                            if (fone[i] != ' ') {
+                                valido = 0;
+                                break;
+                            }
+                        } else {
+                            if (!isdigit(fone[i])) {
+                                valido = 0;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (!valido) {
+                    printf("Telefone invalido! Use o formato: xx 9xxxxxxxx (somente numeros e 1 espaco apos o DDD).\n");
+                }
+
+            } while (!valido);
 
             //endereço
             char endere[255];
