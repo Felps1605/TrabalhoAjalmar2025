@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "pessoas.h"
+#include "UF.h"
 
 #define FILENAME "pessoas.data"
 pessoa *ppe = NULL;
@@ -18,7 +19,7 @@ void pessoas()
     {
         menupessoas();
         scanf("%d", &oppe);
-        faxineirojpp();
+        faxineirojp();
         switch (oppe)
         {
         case 1:
@@ -148,7 +149,7 @@ void inserir_pessoa()
         fgets(cpf, sizeof(cpf), stdin);
         cpf[strcspn(cpf, "\n")] = '\0';  // Remove o \n final
 
-        faxineirojpp();
+        faxineirojp();
 
         // Verifica se só contém dígitos
         for (int i = 0; cpf[i] != '\0'; i++) {
@@ -180,7 +181,7 @@ void inserir_pessoa()
         printf("Insira o titulo (somente numeros, sem pontos ou tracos): \n");
         fgets(tit_ele, sizeof(tit_ele), stdin);
         tit_ele[strcspn(tit_ele, "\n")] = '\0';
-        faxineirojpp();
+        faxineirojp();
 
         for (int i = 0; tit_ele[i] != '\0'; i++) {
             if (!isdigit(tit_ele[i])) {
@@ -207,7 +208,7 @@ void inserir_pessoa()
         printf("Insira o telefone (formato: xx9xxxxxxxx): \n");
         fgets(fone, sizeof(fone), stdin);
         fone[strcspn(fone, "\n")] = '\0';  // Remove o '\n'
-        faxineirojpp();
+        faxineirojp();
         if (strlen(fone) > 0) {
             // Verifica cada caractere
             for (int i = 0; i < 13; i++) {
@@ -235,7 +236,7 @@ void inserir_pessoa()
     int data_nasc[3];
     printf("Insira a data_nascimento (DD MM AAAA): \n");
     scanf("%d %d %d", &data_nasc[0], &data_nasc[1], &data_nasc[2]);
-    faxineirojpp();
+    faxineirojp();
 
     // Dá push na nova pessoa
     pessoa temp;
@@ -364,7 +365,7 @@ void alterar_pessoa() {
     char cpf[12];
     printf("Digite o CPF da pessoa que deseja alterar: \n");
     fgets(cpf, sizeof(cpf), stdin);
-    faxineirojpp();
+    faxineirojp();
     int flag = 0;
 
     int valido;
@@ -413,7 +414,7 @@ void alterar_pessoa() {
                 printf("Insira o telefone (formato: xx9xxxxxxxx): \n");
                 fgets(fone, sizeof(fone), stdin);
                 fone[strcspn(fone, "\n")] = '\0';  // Remove o '\n'
-                faxineirojpp();
+                faxineirojp();
                 if (strlen(fone) > 0) {
                     // Verifica cada caractere
                     for (int i = 0; i < 13; i++) {
@@ -449,13 +450,6 @@ void alterar_pessoa() {
     }
     if (flag == 0)
         printf("Pessoa nao encontrada. \n");
-}
-
-// Limpador de buffer
-void faxineirojpp()
-{
-    while (getchar() != '\n')
-        ;
 }
 
 // Utils
