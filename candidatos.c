@@ -4,7 +4,7 @@
 #include "eleicoes.h"
 #include "candidatos.h"
 #include "pessoas.h"
-#include "UF.h"
+#include "uf.h"
 
 #define FILENAME "candidatos.data"
 
@@ -22,33 +22,35 @@ void candidatos()
         menu_candidatos();
         scanf("%d", &opca);
         faxineirojp();
+
         switch (opca)
         {
-        case 1:
-            inserir_candidato();
-            break;
-        case 2:
-            excluir_candidato();
-            break;
-        case 3:
-            mostrartodos_candidatos();
-            break;
-        case 4:
-            mostrartodos_candidatos_por_ano();
-            break;
-        case 5:
-            mostrar_candidato_por_eleicao();
-            break;
-        case 0:
-            salvar_candidatos();
-            break;
-        default:
-            printf("Opcao invalida. \n");
-            break;
+            case INSERIR_CANDIDATO:
+                inserir_candidato();
+                break;
+            case EXCLUIR_CANDIDATO:
+                excluir_candidato();
+                break;
+            case MOSTRAR_TODOS_CANDIDATOS:
+                mostrartodos_candidatos();
+                break;
+            case MOSTRAR_CANDIDATOS_POR_ANO:
+                mostrartodos_candidatos_por_ano();
+                break;
+            case MOSTRAR_CANDIDATO_POR_ELEICAO:
+                mostrar_candidato_por_eleicao();
+                break;
+            case SAIR_CANDIDATO:
+                salvar_candidatos();
+                break;
+            default:
+                printf("Opcao invalida.\n");
+                break;
         }
 
-    } while (opca != 0);
+    } while (opca != SAIR_CANDIDATO);
 }
+
 void menu_candidatos()
 {
     printf("|============================================|\n");
