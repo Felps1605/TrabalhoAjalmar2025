@@ -145,7 +145,7 @@ void inserir_candidato()
         printf("Insira o CPF: \n");
         fgets(cpf, sizeof(cpf), stdin);
         cpf[strcspn(cpf, "\n")] = '\0';
-        faxineirojpp();
+        faxineirojp();
         if (strlen(cpf) != 11)
                 printf("Insira um CPF valido \n");
         else
@@ -165,9 +165,16 @@ void inserir_candidato()
     //Ler o numero
     int num;
     do {
+        char entrada[10];
         printf("Insira o numero do candidato: \n");
-        scanf("%d", &num);
+        fgets(entrada, sizeof(entrada), stdin);
+        entrada[strcspn(entrada, "\n")] = '\0';
         faxineirojp();
+        if (strlen(entrada) != 2) {
+            printf("Insira um numero valido (2 caracteres). \n");
+            continue;
+        }
+        num = atoi(entrada);
         if (buscar_numero(num) != -1) {
             if (pca[buscar_numero(num)].existe == 1 )
                 printf("Numero ja esta em uso. \n");
@@ -189,7 +196,7 @@ void inserir_candidato()
     push_candidatos(&tempo);
     modificado_ca = 1;
     printf("%s foi adicionad0 no sistema com sucesso. \n", tempo.descricao);
-
+    ordenacao_por_uf_candidato();
 }
 
 // Show candidato
@@ -310,7 +317,7 @@ void excluir_candidato() {
         printf("Insira o CPF do candidato: \n");
         fgets(cpf, sizeof(cpf), stdin);
         cpf[strcspn(cpf, "\n")] = '\0';
-        faxineirojpp();
+        faxineirojp();
         if (strlen(cpf) != 11)
             printf("Insira um CPF valido \n");
         else
@@ -367,4 +374,17 @@ int buscar_numero(int num) {
         }
     }
     return -1;
+}
+
+void ordenacao_por_uf_candidato()
+{
+    for (int i = 0; i < (num_can - 1 ); i++) {
+        for (int j = (i + 1); j < num_can; j++) {
+            if (pca[i].codigoUF > pca[j].codigoUF) {
+                candidato aux = pca[i];
+                pca[i] = pca[j];
+                pca[j] = aux;
+            }
+        }
+    }
 }
