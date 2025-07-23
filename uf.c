@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "UF.h"
+#include "uf.h"
 
 #define FILENAME "UF.data"
 uf *puf = NULL;
@@ -11,42 +11,45 @@ int numufc = 0;
 int capacity = 0;
 int modified = 0;
 
-// Menu
-void estados()
+
+void faxineirojp();
+int buscar_codigo(int cod)
 {
-    int opuf;
-    do
+    for (int i = 0; i < numufc; i++)
     {
-        menuuf();
-        scanf("%d", &opuf);
-        faxineirojp();
-        switch (opuf)
+        if (puf[i].codigo == cod)
         {
-        case 1:
-            inserir();
-            break;
-        case 2:
-            alterar();
-            break;
-        case 3:
-            excluir();
-            break;
-        case 4:
-            mostrartodos();
-            break;
-        case 5:
-            mostraruf();
-            break;
-        case 0:
-            saveUF();
-            break;
-        default:
-            printf("escolha uma opcao valida \n");
-            break;
+            return i;
+        }
+    }
+    return -1;
+}
+int buscar_existencia() {
+    for (int i = 0; i < numufc; i++)
+    {
+        if (puf[i].existe == 1)
+        {
+            return i;
         }
 
-    } while (opuf != 0);
+    }
+    return -1;
 }
+int buscar_sigla(char sig[3]) {
+    for (int i = 0; i < numufc; i++)
+    {
+        int count = 0;
+        for (int j = 0; j < strlen(puf[i].sigla); j++) {
+            if (puf[i].sigla[j] == sig[j]) {
+                ++count;
+                if (count == 2)
+                    return i;
+            }
+        }
+    }
+    return -1;
+}
+
 void menuuf()
 {
     printf("|============================================|\n");
@@ -104,23 +107,43 @@ void saveUF()
     printf("Alteracoes salvas com sucesso! \n");
 }
 
+int buscar_codigo(int cod);
+
 // Insere um novo UF
 void inserir() {
     // Ler o código
+    char entrada[100];
     int cod;
-    do
-    {
-        printf("Insira o codigo: \n");
-        scanf("%d", &cod);
+    int valido;
+
+    do {
+        valido = 1;  // Assumimos que a entrada será válida
+
+        printf("Insira o codigo:\n");
+        fgets(entrada, sizeof(entrada), stdin);
+        entrada[strcspn(entrada, "\n")] = '\0'; // Remove o \n
         faxineirojp();
-        if (cod < 1 )
-        {
-            printf("Codigo invalido! Precisa ser maior que 0! \n");
-            return;
+        // Verifica se todos os caracteres são dígitos
+        for (int i = 0; entrada[i] != '\0'; i++) {
+            if (!isdigit(entrada[i])) {
+                valido = 0;
+                break;
+            }
         }
-        if (buscar_codigo(cod) >= 0)
-            printf("Insira um numero que nao esteja no banco de dados: \n");
-    } while (buscar_codigo(cod) >= 0 || cod < 1);
+
+        if (valido != 1) {
+            printf("Entrada invalida! Digite apenas numeros inteiros positivos.\n");
+            continue;  // volta para o início do laço
+        }
+
+        cod = atoi(entrada);  // Converte a string para inteiro
+
+        if (buscar_codigo(cod) >= 0) {
+            printf("Insira um numero que nao esteja no banco de dados.\n");
+            valido = 0;
+        }
+
+    } while (buscar_codigo(cod) >= 0 || cod < 1 || valido !=1);
 
     // Ler a descrição
     char descri[100];
@@ -143,7 +166,7 @@ void inserir() {
                 break;
             }
         }
-        if (!valida || strlen(sig) == 0) {
+        if (valida != 1 || strlen(sig) == 0) {
             printf("Entrada invalida. Digite apenas letras (sem numeros, espaços ou simbolos).\n");
         }
         else{
@@ -286,23 +309,38 @@ void alterar() {
             fgets(descri, 100, stdin);
             descri[strcspn(descri, "\n")] = '\0';
             strcpy(puf[i].descricao, descri);
+
+
             char sig[3];
+            int valida;
             do
             {
                 printf("Insira a sigla: \n");
                 fgets(sig, sizeof(sig), stdin);
-                sig[strcspn(sig, "\n")] = '\0';
-
                 faxineirojp();
-                if (buscar_sigla(sig) != -1) {
-                    if (puf[buscar_sigla(sig)].existe == 1 )
-                        printf("Sigla ja esta em uso. \n");
-                }else
-                    if (strlen(sig) != 2)
-                        printf("Insira uma sigla valida \n");
-                    else
+                sig[strcspn(sig, "\n")] = '\0';
+                valida = 1;
+                for (int i = 0; sig[i] != '\0'; i++) {
+                    if (!isalpha(sig[i])) {
+                        valida = 0;
                         break;
+                    }
+                }
+                if (valida != 1 || strlen(sig) == 0) {
+                    printf("Entrada invalida. Digite apenas letras (sem numeros, espaços ou simbolos).\n");
+                }
+                else{
 
+                    if (buscar_sigla(sig) != -1 ) {
+                        if (puf[buscar_sigla(sig)].existe == 1 )
+                            printf("Sigla ja esta em uso. \n");
+                    }else {
+                        if (strlen(sig) != 2)
+                            printf("Insira uma sigla valida \n");
+                        else
+                            break;
+                    }
+                }
             } while (1);
             strcpy(puf[i].sigla, sig);
             modified = 1;
@@ -319,41 +357,39 @@ void faxineirojp()
         ;
 }
 
-// Utils
-int buscar_codigo(int cod)
+// Menu
+void estados()
 {
-    for (int i = 0; i < numufc; i++)
+    int opuf;
+    do
     {
-        if (puf[i].codigo == cod)
+        menuuf();
+        scanf("%d", &opuf);
+        faxineirojp();
+        switch (opuf)
         {
-            return i;
+            case 1:
+                inserir();
+                break;
+            case 2:
+                alterar();
+                break;
+            case 3:
+                excluir();
+                break;
+            case 4:
+                mostrartodos();
+                break;
+            case 5:
+                mostraruf();
+                break;
+            case 0:
+                saveUF();
+                break;
+            default:
+                printf("escolha uma opcao valida \n");
+                break;
         }
-    }
-    return -1;
-}
 
-int buscar_existencia() {
-    for (int i = 0; i < numufc; i++)
-    {
-        if (puf[i].existe == 1)
-        {
-            return i;
-        }
-
-    }
-    return -1;
-}
-int buscar_sigla(char sig[3]) {
-    for (int i = 0; i < numufc; i++)
-    {
-        int count = 0;
-        for (int j = 0; j < strlen(puf[i].sigla); j++) {
-            if (puf[i].sigla[j] == sig[j]) {
-                ++count;
-                if (count == 2)
-                    return i;
-            }
-        }
-    }
-    return -1;
+    } while (opuf != 0);
 }
