@@ -14,7 +14,16 @@ typedef struct {
     unsigned int existe : 1;
 } candidato;
 
+extern candidato *pca;
 // Funções
+typedef enum {
+    SAIR_CANDIDATO = 0,
+    INSERIR_CANDIDATO = 1,
+    EXCLUIR_CANDIDATO = 2,
+    MOSTRAR_TODOS_CANDIDATOS = 3,
+    MOSTRAR_CANDIDATOS_POR_ANO = 4,
+    MOSTRAR_CANDIDATO_POR_ELEICAO = 5
+} OpcaoCandidato;
 
 // Menu
 void candidatos();
