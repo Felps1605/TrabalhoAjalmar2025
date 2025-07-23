@@ -4,7 +4,7 @@ typedef struct {
     char sigla[3];
     unsigned int existe: 1;
 } uf;
-
+extern uf *puf;
 // Funções
 
 // Menu
