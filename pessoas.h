@@ -8,7 +8,17 @@ typedef struct {
     unsigned int existe : 1;
 } pessoa;
 
+extern pessoa *ppe;
 // Funções
+
+typedef enum {
+    SAIR_PESSOA = 0,
+    INSERIR_PESSOA = 1,
+    ALTERAR_PESSOA = 2,
+    EXCLUIR_PESSOA = 3,
+    MOSTRAR_TODAS_PESSOAS = 4,
+    MOSTRAR_PESSOA = 5
+} OpcaoPessoa;
 
 // Menu
 void pessoas();
